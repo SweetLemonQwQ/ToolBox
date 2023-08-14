@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="程序图标">
+    <file>logo.ico</file>
+  </qresource>
+  <qresource prefix="部件图标">
+    <file>folder-download-line.png</file>
+    <file>folder-open-fill.png</file>
+    <file>folder-open-line.png</file>
+  </qresource>
+</RCC>
