@@ -6,7 +6,27 @@ from io import BytesIO
 import fitz
 from PIL import Image
 
+VER = '1.1DEV'
 
+class Toolbox:
+    def __init__(self):
+        self.window = QUiLoader().load('ui/tb.ui')  # 从文件中加载UI定义,动态创建一个相应的窗口对象
+        self.window.setWindowIcon(QIcon('ui/logo.ico'))
+        # 注意：里面的控件对象也成为窗口对象的属性了
+        # 比如 self.ui.button , self.ui.textEdit
+        self.window.ver.setText(f'<html><head/><body><p align="right"><span style=" font-size:6pt;">Ver:{VER}</span></p></body></html>')
+        self.window.in_path.clicked.connect(pdf.onInpath)  # 读入文件
+        self.window.out_path.clicked.connect(pdf.onOutpath)  # 输出文件
+        self.window.start_button.clicked.connect(pdf.onStart)  # 开始
+        self.window.choice_buttonGroup.buttonClicked.connect(pdf.onChoice)  # 选项
+        self.window.custom_dpi.textChanged.connect(pdf.onTextChange)  # 自定义
+
+        self.window.in_path_ico.clicked.connect(ico.onInpath)
+        self.window.out_path_ico.clicked.connect(ico.onOutpath)
+        self.window.start_button_ico.clicked.connect(ico.onStart)
+        self.window.type_buttonGroup.buttonClicked.connect(ico.onChooseType)
+
+#####################################################
 # PDF处理
 def pdf_compress(_pdf, _out, _dpi, _type="png", method=0):
     tb.window.setCursor(QCursor(Qt.WaitCursor))
@@ -44,41 +64,6 @@ def pdf_compress(_pdf, _out, _dpi, _type="png", method=0):
     tb.window.setCursor(QCursor(Qt.ArrowCursor))
     return
 
-
-
-# ICO转换
-def convert_image(input_path, output_path):
-    # if input_path and output_path:          #判断参数是否都存在
-    # 判断是否自定义输出路径
-    if output_path == '':
-        image = Image.open(input_path)  # 通过路径读取图片
-        # 保存到输出路径 ，并且格式为 “ICO”，大小为32X32
-        image.save(output_path, format='ICO', sizes=[(32, 32)])
-    else:
-        image = Image.open(input_path)  # 通过路径读取图片
-        # 保存到输出路径 ，并且格式为 “ICO”，大小为32X32
-        image.save(output_path, format='ICO', sizes=[(32, 32)])
-    QMessageBox.information(tb.window,
-                            'PDF操作',
-                            '压缩完成！')
-
-
-class Toolbox:
-    def __init__(self):
-        self.window = QUiLoader().load('ui/tb.ui')  # 从文件中加载UI定义,动态创建一个相应的窗口对象
-        self.window.setWindowIcon(QIcon('ui/logo.ico'))
-        # 注意：里面的控件对象也成为窗口对象的属性了
-        # 比如 self.ui.button , self.ui.textEdit
-        self.window.in_path.clicked.connect(pdf.onInpath)
-        self.window.out_path.clicked.connect(pdf.onOutpath)
-        self.window.start_button.clicked.connect(pdf.onStart)
-        self.window.choice_buttonGroup.buttonClicked.connect(pdf.onChoice)
-        self.window.custom_dpi.textChanged.connect(pdf.onTextChange)
-
-        #self.window.in_path_ico.clicked.connect(ico.onInpath)
-        #self.window.out_path_ico.clicked.connect(ico.onOutpath)
-        #self.window.start_button_ico.clicked.connect(ico.onStart)
-#####################################################
 class Pdf:
     filePathIn = ''
     filePathOut = ''
@@ -144,28 +129,83 @@ class Pdf:
         return
 
 #############################################################
+
+# 图片转换
+
+
+def convert_image(input_path, output_path, out_format, sizes=None):
+    # if input_path and output_path:          #判断参数是否都存在
+    
+    if output_path == '':  # 不自定义
+        if ico.image.format == 'PNG' and (out_format == 'jpg' or out_format == 'jpeg'):
+            # png->jpg
+            # 转换图片模式
+            ico.image = ico.image.convert('RGB')
+        if out_format == 'ico':
+            ico.image.save(input_path.rsplit('.')[0] + '.' + out_format,format='ICO')
+            pass
+        ico.image.save(input_path.rsplit('.')[0] + '.' + out_format)
+    else:  # 自定义输出路径
+        if ico.image.format == 'PNG' and (out_format == 'jpg' or out_format == 'jpeg'):
+            # png->jpg
+            # 转换图片模式
+            ico.image = ico.image.convert('RGB')
+        if out_format == 'ico':
+            ico.image.save(output_path + '/' + input_path.rsplit('.')[0].rsplit('/')[-1] + '.' + out_format,format='ICO')
+            pass
+        ico.image.save(output_path + '/' + input_path.rsplit('.')[0].rsplit('/')[-1] + '.' + out_format)
+        # image.save(output_path, format='ICO', sizes=[(32, 32)])
+        # 保存到输出路径 ，并且格式为 “ICO”，大小为32X32
+    
+    QMessageBox.information(tb.window,
+                            '图片转换',
+                            '转换完成！')
+    return
+
 class Ico:
     filePathIn = ''
     filePathOut = ''
-
+    image: Image.Image
+    outType = ''
     # 读入文件
+
     def onInpath(self):
         self.filePathIn, _ = QFileDialog.getOpenFileName(
             tb.window,  # 父窗口对象
-            "选择要压缩的PDF",  # 标题
+            "选择要转换的图片",  # 标题
             r"d:\\",  # 起始目录
             "Images (*.png *.jpg *.jpeg *.bmp *.gif)"  # 选择类型过滤项，过滤内容在括号中
         )
         if self.filePathIn == '':
             return
+        self.image = Image.open(self.filePathIn)  # 通过路径读取图片
         tb.window.in_path_text_ico.setPlainText('已选择文件:\n' + self.filePathIn)
 
     # 输出文件
+
     def onOutpath(self):
         self.filePathOut = QFileDialog.getExistingDirectory(
             tb.window,
             "选择存储路径")
         tb.window.out_path_text_ico.setPlainText('已选择目录:\n' + self.filePathOut)
+
+    # 选择输出类型
+    def onChooseType(self):
+        choiceId = tb.window.type_buttonGroup.checkedId()
+        print(choiceId)
+        if choiceId == -2:
+            self.outType = 'jpg'
+        elif choiceId == -3:
+            self.outType = 'gif'
+        elif choiceId == -4:
+            self.outType = 'jpeg'
+        elif choiceId == -5:
+            self.outType = 'bmp'
+        elif choiceId == -6:
+            self.outType = 'png'
+        elif choiceId == -7:
+            self.outType = 'ico'
+        return
 
     # 点击开始
     def onStart(self):
@@ -174,7 +214,7 @@ class Ico:
                                 '警告',
                                 '文件未选择')
             return
-        convert_image(self.filePathIn, self.filePathOut)
+        convert_image(self.filePathIn, self.filePathOut, self.outType)
 
 
 #########################
@@ -187,3 +227,8 @@ tb = Toolbox()          #
 tb.window.show()        #
 app.exec_()             #
 #########################
+"""
+im = Image.open('C:/Users/SweetLemon/Desktop/py/ToolBox/ui/256png.jpg')
+#im=im.convert('RGB')
+im.save('C:/Users/SweetLemon/Desktop/py/ToolBox/ui/666png.png')
+"""
