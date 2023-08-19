@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>297</height>
+    <height>442</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,176 +32,198 @@
    </item>
    <item>
     <widget class="CardWidget" name="CardWidget">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_9">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="BodyLabel" name="in_path_text_ico">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Microsoft YaHei UI</family>
-            <pointsize>9</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>①选择文件</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="PushButton" name="in_path_ico">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Microsoft YaHei UI</family>
-            <pointsize>9</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>选择文件</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="BodyLabel" name="BodyLabel">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;②选择转换的格式&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
+       <widget class="CardWidget" name="CardWidget_2">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="BodyLabel" name="in_path_text_ico">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+               <pointsize>9</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>①选择文件</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="PushButton" name="in_path_ico">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+               <pointsize>9</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>选择文件</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="RadioButton" name="jpg">
-            <property name="text">
-             <string>JPG</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">type_buttonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="RadioButton" name="gif">
-            <property name="text">
-             <string>GIF</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">type_buttonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
-          <item>
-           <widget class="RadioButton" name="jpeg">
-            <property name="text">
-             <string>JPEG</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">type_buttonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="RadioButton" name="bmp">
-            <property name="text">
-             <string>BMP</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">type_buttonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
-          <item>
-           <widget class="RadioButton" name="png">
-            <property name="text">
-             <string>PNG</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">type_buttonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="RadioButton" name="ico">
-            <property name="text">
-             <string>ICO</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">type_buttonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <widget class="CardWidget" name="CardWidget_3">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="BodyLabel" name="BodyLabel">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;②选择转换的格式&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <item>
+                <widget class="RadioButton" name="jpg">
+                 <property name="text">
+                  <string>JPG</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">type_buttonGroup</string>
+                 </attribute>
+                </widget>
+               </item>
+               <item>
+                <widget class="RadioButton" name="gif">
+                 <property name="text">
+                  <string>GIF</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">type_buttonGroup</string>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_6">
+               <item>
+                <widget class="RadioButton" name="jpeg">
+                 <property name="text">
+                  <string>JPEG</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">type_buttonGroup</string>
+                 </attribute>
+                </widget>
+               </item>
+               <item>
+                <widget class="RadioButton" name="bmp">
+                 <property name="text">
+                  <string>BMP</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">type_buttonGroup</string>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <widget class="RadioButton" name="png">
+                 <property name="text">
+                  <string>PNG</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">type_buttonGroup</string>
+                 </attribute>
+                </widget>
+               </item>
+               <item>
+                <widget class="RadioButton" name="ico">
+                 <property name="text">
+                  <string>ICO</string>
+                 </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">type_buttonGroup</string>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="BodyLabel" name="out_path_text_ico">
-          <property name="font">
-           <font>
-            <family>Microsoft YaHei UI</family>
-            <pointsize>9</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>③留空则生成在原文件同文件夹下</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="PushButton" name="out_path_ico">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>Microsoft YaHei UI</family>
-            <pointsize>9</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>选择
+       <widget class="CardWidget" name="CardWidget_4">
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="BodyLabel" name="out_path_text_ico">
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+               <pointsize>9</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>③留空则生成在原文件同文件夹下</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="PushButton" name="out_path_ico">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+               <pointsize>9</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>选择
 输出路径</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
        <widget class="PrimaryPushButton" name="start_button_ico">
