@@ -1,6 +1,5 @@
 from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtCore import Qt
-from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox,QWidget
 
 from Ui_sec import Ui_SecondPage
@@ -26,10 +25,6 @@ class SecondPage(QWidget,Ui_SecondPage):
         self.out_path_ico.clicked.connect(self.onOutpath)
         self.start_button_ico.clicked.connect(self.onStart)
         self.type_buttonGroup.buttonClicked.connect(self.onChooseType)
-        
-
-
-        #self.in_path.setIcon(FluentIcon.FILTER)
 
 #####################################################
 #功能部分

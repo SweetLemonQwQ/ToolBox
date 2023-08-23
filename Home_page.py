@@ -1,9 +1,7 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 
 
 from Ui_home import Ui_HomePage
-from qfluentwidgets import FluentIcon,setTheme,Theme,style_sheet
 
 from ver import VER
 

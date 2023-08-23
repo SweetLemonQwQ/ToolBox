@@ -8,7 +8,6 @@ from PyQt5.QtCore import pyqtSignal,QObject
 
 from Ui_fst import Ui_FirstPage
 from qfluentwidgets import FluentIcon
-#,info_bar,InfoBarIcon,InfoBarManager,InfoBarPosition
 
 import fitz
 from PIL import Image
