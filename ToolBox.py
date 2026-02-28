@@ -9,10 +9,13 @@ from qfluentwidgets import FluentIcon, SplitFluentWindow, Theme, setTheme, setTh
 from First_page import FirstPage
 from Home_page import HomePage
 from Second_page import SecondPage
+from Python_page import PythonPage
 
 
 class Toolbox(SplitFluentWindow):
+    """应用主窗口，负责组装各功能页面与主题切换。"""
     def __init__(self):
+        """初始化窗口、侧边栏页面和主题依赖控件。"""
         super().__init__()
 
         self.setWindowTitle('ToolBox')
@@ -26,6 +29,9 @@ class Toolbox(SplitFluentWindow):
 
         self.secondPage = SecondPage(self)
         self.addSubInterface(self.secondPage, FluentIcon.PHOTO, '图片转换')
+
+        self.pythonPage = PythonPage(self)
+        self.addSubInterface(self.pythonPage, FluentIcon.DOCUMENT, 'Python版本与库管理')
 
         self._theme_text_widgets = [
             self.homePage.TitleLabel,
@@ -43,14 +49,17 @@ class Toolbox(SplitFluentWindow):
         self.homePage.SwitchButton.checkedChanged.connect(self.onSwitch)
 
     def _apply_text_color(self, color: QColor):
+        """统一更新主题相关文本控件颜色。"""
         for widget in self._theme_text_widgets:
             widget.setTextColor(color)
 
     def apply_theme_by_switch(self, is_dark: bool):
+        """根据开关状态应用明/暗主题。"""
         setTheme(Theme.DARK if is_dark else Theme.LIGHT)
         self._apply_text_color(QColor(0, 0, 0) if is_dark else QColor(96, 96, 96))
 
     def onSwitch(self):
+        """处理主题开关事件并刷新界面样式。"""
         is_dark = self.homePage.SwitchButton.getText() == '打开'
         self.apply_theme_by_switch(is_dark)
 
