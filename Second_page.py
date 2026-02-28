@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QWidget
 
 from Ui_sec import Ui_SecondPage
@@ -7,6 +5,7 @@ from qfluentwidgets import FluentIcon
 
 from PIL import Image
 
+from services.image_service import convert_image
 from ver import VER
 
 
@@ -29,25 +28,6 @@ class SecondPage(QWidget, Ui_SecondPage):
         self.out_path_ico.clicked.connect(self.onOutpath)
         self.start_button_ico.clicked.connect(self.onStart)
         self.type_buttonGroup.buttonClicked.connect(self.onChooseType)
-
-    def convert_image(self, input_path: str, output_path: str, out_format: str):
-        source = Path(input_path)
-        target_dir = Path(output_path) if output_path else source.parent
-        target_path = target_dir / f"{source.stem}.{out_format}"
-
-        image_to_save = self.image
-        if image_to_save is None:
-            raise ValueError('图片尚未加载')
-
-        if image_to_save.format == 'PNG' and out_format in ('jpg', 'jpeg'):
-            image_to_save = image_to_save.convert('RGB')
-
-        save_kwargs = {}
-        if out_format == 'ico':
-            save_kwargs['format'] = 'ICO'
-
-        image_to_save.save(str(target_path), **save_kwargs)
-        return str(target_path)
 
     def onInpath(self):
         self.filePathIn, _ = QFileDialog.getOpenFileName(
@@ -89,8 +69,12 @@ class SecondPage(QWidget, Ui_SecondPage):
             QMessageBox.warning(self, '警告', '请选择输出格式')
             return
 
+        if self.image is None:
+            QMessageBox.warning(self, '警告', '图片尚未加载')
+            return
+
         try:
-            out_file = self.convert_image(self.filePathIn, self.filePathOut, self.outType)
+            out_file = convert_image(self.image, self.filePathIn, self.filePathOut, self.outType)
             QMessageBox.information(self, '图片转换', f'转换完成！\n输出文件：\n{out_file}')
         except Exception as exc:
             QMessageBox.critical(self, '图片转换失败', f'转换失败：{exc}')

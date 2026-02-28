@@ -1,6 +1,3 @@
-from io import BytesIO
-from pathlib import Path
-
 from PyQt5.QtCore import QThread, Qt, pyqtSignal
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QWidget
@@ -8,8 +5,7 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox, QWidget
 from Ui_fst import Ui_FirstPage
 from qfluentwidgets import FluentIcon
 
-import fitz
-from PIL import Image
+from services.pdf_service import compress_pdf
 from ver import VER
 
 
@@ -20,44 +16,23 @@ class PdfCompressWorker(QThread):
 
     def __init__(self, pdf_path: str, out_dir: str, dpi: int, img_type: str = "png", method: int = 0):
         super().__init__()
-        self.pdf_path = Path(pdf_path)
-        self.out_dir = Path(out_dir) if out_dir else None
+        self.pdf_path = pdf_path
+        self.out_dir = out_dir
         self.dpi = dpi
         self.img_type = img_type
         self.method = method
 
     def run(self):
         try:
-            merges = []
-            first_file = None
-            with fitz.open(str(self.pdf_path)) as doc:
-                total = len(doc)
-                if total == 0:
-                    raise ValueError("PDF为空，无法压缩")
-
-                for i, page in enumerate(doc.pages(), start=0):
-                    img = page.get_pixmap(dpi=self.dpi)
-                    img_bytes = img.pil_tobytes(format=self.img_type)
-                    image = Image.open(BytesIO(img_bytes))
-                    if i == 0:
-                        first_file = image
-                    pix: Image.Image = image.quantize(colors=256, method=self.method).convert('RGB')
-                    merges.append(pix)
-                    self.progress_changed.emit(((i + 1) / total) * 100)
-
-            if first_file is None:
-                raise ValueError("无法读取PDF首页")
-
-            out_name = f"{self.pdf_path.stem}_in_{self.dpi}dpi.pdf"
-            out_path = (self.out_dir / out_name) if self.out_dir else self.pdf_path.with_name(out_name)
-
-            first_file.save(
-                str(out_path),
-                "pdf",
-                save_all=True,
-                append_images=merges[1:],
+            out_path = compress_pdf(
+                pdf_path=self.pdf_path,
+                out_dir=self.out_dir,
+                dpi=self.dpi,
+                img_type=self.img_type,
+                method=self.method,
+                progress_cb=self.progress_changed.emit,
             )
-            self.succeeded.emit(str(out_path))
+            self.succeeded.emit(out_path)
         except Exception as exc:
             self.failed.emit(str(exc))
 
