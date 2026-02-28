@@ -11,33 +11,22 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from PyQt5.QtCore import QThread, Qt, pyqtSignal
-from PyQt5.QtWidgets import (
-    QComboBox,
-    QDialog,
-    QDialogButtonBox,
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QMenu,
-    QMessageBox,
-    QPushButton,
-    QTableWidget,
-    QTableWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QAbstractItemView, QDialog, QFormLayout, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QWidget
+
+from qfluentwidgets import Action, BodyLabel, ComboBox, LineEdit, MessageBox, PushButton, RoundMenu, TableWidget
 
 
 @dataclass
 class PythonInterpreter:
     """保存 Python 解释器信息的数据结构。"""
+
     executable: str
     display_name: str
 
 
 class CommandWorker(QThread):
     """通用后台任务线程，用于执行耗时命令并回传结果。"""
+
     succeeded = pyqtSignal(object)
     failed = pyqtSignal(str)
 
@@ -59,6 +48,7 @@ class CommandWorker(QThread):
 
 class PackageInstallConfirmDialog(QDialog):
     """安装前确认弹窗，展示名称、版本、描述，避免误装。"""
+
     def __init__(self, name: str, version: str, summary: str, parent=None):
         """构建安装确认对话框。"""
         super().__init__(parent)
@@ -66,21 +56,27 @@ class PackageInstallConfirmDialog(QDialog):
         self.setModal(True)
 
         layout = QFormLayout(self)
-        layout.addRow('名称：', QLabel(name))
-        layout.addRow('版本：', QLabel(version or '未指定'))
+        layout.addRow('名称：', BodyLabel(name))
+        layout.addRow('版本：', BodyLabel(version or '未指定'))
 
-        summary_label = QLabel(summary or '暂无描述')
+        summary_label = BodyLabel(summary or '暂无描述')
         summary_label.setWordWrap(True)
         layout.addRow('描述：', summary_label)
 
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        buttons.accepted.connect(self.accept)
-        buttons.rejected.connect(self.reject)
-        layout.addRow(buttons)
+        button_layout = QHBoxLayout()
+        self.ok_button = PushButton('确认安装')
+        self.cancel_button = PushButton('取消')
+        self.ok_button.clicked.connect(self.accept)
+        self.cancel_button.clicked.connect(self.reject)
+        button_layout.addStretch(1)
+        button_layout.addWidget(self.cancel_button)
+        button_layout.addWidget(self.ok_button)
+        layout.addRow(button_layout)
 
 
 class PackageDetailsDialog(QDialog):
     """第三方库详情弹窗，用于展示完整元信息。"""
+
     def __init__(self, name: str, version: str, summary: str, home_page: str, parent=None):
         """构建详情对话框并填充核心字段。"""
         super().__init__(parent)
@@ -88,25 +84,28 @@ class PackageDetailsDialog(QDialog):
         self.setModal(True)
 
         layout = QFormLayout(self)
-        layout.addRow('名称：', QLabel(name))
-        layout.addRow('版本：', QLabel(version))
+        layout.addRow('名称：', BodyLabel(name))
+        layout.addRow('版本：', BodyLabel(version))
 
-        summary_label = QLabel(summary or '暂无描述')
+        summary_label = BodyLabel(summary or '暂无描述')
         summary_label.setWordWrap(True)
         layout.addRow('描述：', summary_label)
 
-        homepage_label = QLabel(home_page or '暂无主页信息')
+        homepage_label = BodyLabel(home_page or '暂无主页信息')
         homepage_label.setWordWrap(True)
         layout.addRow('主页：', homepage_label)
 
-        button = QDialogButtonBox(QDialogButtonBox.Close)
-        button.rejected.connect(self.reject)
-        button.accepted.connect(self.accept)
-        layout.addRow(button)
+        close_layout = QHBoxLayout()
+        close_button = PushButton('关闭')
+        close_button.clicked.connect(self.accept)
+        close_layout.addStretch(1)
+        close_layout.addWidget(close_button)
+        layout.addRow(close_layout)
 
 
 class PythonPage(QWidget):
     """Python 版本与第三方库管理页面。"""
+
     def __init__(self, parent=None):
         """初始化页面状态、UI 结构与解释器列表。"""
         super().__init__(parent=parent)
@@ -124,38 +123,59 @@ class PythonPage(QWidget):
         main_layout = QVBoxLayout(self)
 
         top_layout = QHBoxLayout()
-        self.python_combo = QComboBox()
+        self.python_title_label = BodyLabel('Python 版本：')
+        self.python_combo = ComboBox()
         self.python_combo.currentIndexChanged.connect(self.on_python_changed)
-        self.refresh_button = QPushButton('刷新库列表')
+        self.refresh_button = PushButton('刷新库列表')
         self.refresh_button.clicked.connect(self.refresh_current_packages)
 
-        top_layout.addWidget(QLabel('Python 版本：'))
+        top_layout.addWidget(self.python_title_label)
         top_layout.addWidget(self.python_combo, 1)
         top_layout.addWidget(self.refresh_button)
         main_layout.addLayout(top_layout)
 
         search_layout = QHBoxLayout()
-        self.search_input = QLineEdit()
+        self.search_input = LineEdit()
         self.search_input.setPlaceholderText('搜索已安装库，或输入库名后点击“搜索/安装库”')
         self.search_input.textChanged.connect(self._filter_table)
-        self.search_install_button = QPushButton('搜索/安装库')
+        self.search_install_button = PushButton('搜索/安装库')
         self.search_install_button.clicked.connect(self.on_search_install)
 
         search_layout.addWidget(self.search_input, 1)
         search_layout.addWidget(self.search_install_button)
         main_layout.addLayout(search_layout)
 
-        self.package_table = QTableWidget(0, 3)
+        self.package_table = TableWidget(self)
+        self.package_table.setColumnCount(3)
+        self.package_table.setRowCount(0)
         self.package_table.setHorizontalHeaderLabels(['名称', '版本', '描述'])
-        self.package_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.package_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.package_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.package_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.package_table.setContextMenuPolicy(Qt.CustomContextMenu)
         self.package_table.customContextMenuRequested.connect(self.on_context_menu)
         self.package_table.horizontalHeader().setStretchLastSection(True)
         main_layout.addWidget(self.package_table)
 
-        self.status_label = QLabel('正在初始化...')
+        self.status_label = BodyLabel('正在初始化...')
         main_layout.addWidget(self.status_label)
+
+    def _show_info(self, title: str, content: str):
+        """展示提示信息弹窗。"""
+        dialog = MessageBox(title, content, self)
+        dialog.yesButton.setText('确定')
+        dialog.cancelButton.hide()
+        dialog.exec_()
+
+    def _show_error(self, title: str, content: str):
+        """展示错误信息弹窗。"""
+        self._show_info(title, content)
+
+    def _ask_confirm(self, title: str, content: str) -> bool:
+        """展示二次确认弹窗。"""
+        dialog = MessageBox(title, content, self)
+        dialog.yesButton.setText('确认')
+        dialog.cancelButton.setText('取消')
+        return dialog.exec_() == QDialog.Accepted
 
     def _set_busy(self, busy: bool, text: str | None = None):
         """统一切换页面忙碌状态，避免并发操作造成冲突。"""
@@ -305,12 +325,15 @@ class PythonPage(QWidget):
         row = item.row()
         name = self.package_table.item(row, 0).text()
 
-        menu = QMenu(self)
-        act_update = menu.addAction('更新库')
-        act_uninstall = menu.addAction('卸载库')
-        act_detail = menu.addAction('查看详情')
+        menu = RoundMenu(parent=self)
+        act_update = Action('更新库', self)
+        act_uninstall = Action('卸载库', self)
+        act_detail = Action('查看详情', self)
+        menu.addAction(act_update)
+        menu.addAction(act_uninstall)
+        menu.addAction(act_detail)
 
-        selected = menu.exec_(self.package_table.viewport().mapToGlobal(pos))
+        selected = menu.exec(self.package_table.viewport().mapToGlobal(pos))
         if selected == act_update:
             self._update_package(name)
         elif selected == act_uninstall:
@@ -337,8 +360,7 @@ class PythonPage(QWidget):
         exe = self._current_exe()
         if not exe:
             return
-        reply = QMessageBox.question(self, '确认卸载', f'确认卸载 {name} 吗？')
-        if reply != QMessageBox.Yes:
+        if not self._ask_confirm('确认卸载', f'确认卸载 {name} 吗？'):
             return
         self._start_worker(self._run_pip_command, exe, ['uninstall', '-y', name], busy_text=f'正在卸载 {name}...')
 
@@ -350,7 +372,7 @@ class PythonPage(QWidget):
         try:
             out = subprocess.check_output([exe, '-m', 'pip', 'show', name], text=True, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as exc:
-            QMessageBox.critical(self, '查看详情失败', exc.output)
+            self._show_error('查看详情失败', exc.output)
             return
 
         info = {'Name': name, 'Version': '', 'Summary': '', 'Home-page': ''}
@@ -373,7 +395,7 @@ class PythonPage(QWidget):
         """根据输入库名查询安装候选信息并进入确认流程。"""
         keyword = self.search_input.text().strip()
         if not keyword:
-            QMessageBox.information(self, '提示', '请输入库名')
+            self._show_info('提示', '请输入库名')
             return
 
         exe = self._current_exe()
@@ -410,7 +432,7 @@ class PythonPage(QWidget):
     def _start_worker(self, runner, *args, busy_text: str = '处理中...'):
         """启动后台任务线程，统一处理并发保护与状态控制。"""
         if self.current_worker is not None and self.current_worker.isRunning():
-            QMessageBox.warning(self, '提示', '当前已有任务在执行，请稍后')
+            self._show_info('提示', '当前已有任务在执行，请稍后')
             return
 
         self._set_busy(True, busy_text)
@@ -455,4 +477,4 @@ class PythonPage(QWidget):
         """处理后台任务失败结果并提示用户。"""
         self._set_busy(False, '操作失败')
         self.current_worker = None
-        QMessageBox.critical(self, '操作失败', error)
+        self._show_error('操作失败', error)
