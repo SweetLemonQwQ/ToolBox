@@ -110,6 +110,8 @@ class PythonPage(QWidget):
     def __init__(self, parent=None):
         """初始化页面状态、UI 结构与解释器列表。"""
         super().__init__(parent=parent)
+        # SplitFluentWindow.addSubInterface 要求页面 objectName 非空，否则会抛出 ValueError
+        self.setObjectName('pythonPage')
         self.interpreters: list[PythonInterpreter] = []
         self.packages_cache: dict[str, list[dict]] = {}
         self.current_worker: CommandWorker | None = None
